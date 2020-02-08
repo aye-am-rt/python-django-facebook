@@ -52,17 +52,18 @@ def post_create(request):
 
 
 
-def post_detail(request, id=None):
+def post_detail(request, slug=None):
    # instance=Post.objects.get(id=3) this is tight method what if id =3 does not exist you will get error.
    # thats why you have to use get objrect or 404 method.
 
-   instance=get_object_or_404(Post,id=id)
+   instance=get_object_or_404(Post,slug=slug)
    context = {'title': ' detail page', 'instance' : instance}
    return render(request, 'post_detail.html', context)
 
 def post_list(request):
-    instance=get_object_or_404(Post,id=1)
+    #instance=get_object_or_404(Post,slug=1)
     queryset_list=Post.objects.all()        # .order_by('-timestamp')  # you can also update this oder in post model class by making class Meta
+    print(queryset_list)
     paginator = Paginator(queryset_list, 3) # Show 3 contacts per page.
     page_req_var = 'abc'
     page_number = request.GET.get(page_req_var)
@@ -78,8 +79,8 @@ def post_list(request):
 
 
 
-def post_update(request, id=None):
-   instance=get_object_or_404(Post,id=id)
+def post_update(request, slug=None):
+   instance=get_object_or_404(Post,slug=slug)
    form=PostForm(request.POST or None, request.FILES or None, instance=instance)
    if form.is_valid():
        instance = form.save(commit=False)
@@ -90,8 +91,8 @@ def post_update(request, id=None):
    context = {'title' : instance.title, 'instance' : instance, 'form' : form}
    return render(request, 'post_form.html', context)
 
-def post_delete(request, id=None):
-    instance=get_object_or_404(Post,id=id)
+def post_delete(request, slug=None):
+    instance=get_object_or_404(Post,slug=slug)
     instance.delete()
     messages.success(request,"<a href='#'>Successfully</a> Deleted !!",extra_tags='html_safe')
     return redirect('posts:list')
